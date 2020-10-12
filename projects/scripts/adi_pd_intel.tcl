@@ -28,7 +28,6 @@ proc checksum8bit {hex} {
     if { ($i+1) % 2 == 0} {
       append byte [string index $hex $i];
       set chks [expr $chks + "0x$byte"];
-      puts $chks;
     } else {
       set byte [string index $hex $i];
       }
@@ -50,10 +49,8 @@ proc hexstr_flip {str} {
   set byte {};
   for {set i 0} {$i < [string length $str]} {incr i} {
     if {[expr ($i+1) % 8] == 0} {
-      puts "ti: $i";
       append line [string index $str $i];
       set line_d $line;
-      puts "line_d $line_d"
       set fline {};
       for {set j 0} {$j < [string length $line]} {incr j} {
         if {[expr ($j+1) % 2] == 0} {
@@ -65,9 +62,7 @@ proc hexstr_flip {str} {
       append fstr [rev_by_string $fline];
       set line {};
     } else {
-      puts "fi: $i";
       append line [string index $str $i];
-      puts "line: $line";
     }
   };
   return $fstr;
@@ -99,19 +94,18 @@ proc sysid_gen_sys_init_file {{custom_string {}}} {
 
   global project_name;
   if {[info exists project_name]} {
-    puts "yesyesyes";
-	puts "project_name: $project_name";
+    puts "project_name: $project_name";
   } else {
-    puts "nonono";
     set project_name [current_project];
-	puts "project_name: $project_name";
+    puts "project_name: $project_name";
   }
 
   if {[catch {exec git rev-parse HEAD} gitsha_string] != 0} {
     set gitsha_string 0;
   }
   set gitsha_hex [hexstr_flip [stringtohex $gitsha_string 44]];
-  puts "gitsha_hex $gitsha_hex"
+  puts "gitsha_string $gitsha_string";
+  puts "gitsha_hex $gitsha_hex";
 
   set git_clean_string "f";
   if {$gitsha_string != 0} {
@@ -120,39 +114,59 @@ proc sysid_gen_sys_init_file {{custom_string {}}} {
         set git_clean_string "t";
       }
     }
+    if {[catch {exec git branch} gitbranch_string] != 0} {
+      set gitbranch_string "";
+    } else {
+      set gitbranch_string [lindex $gitbranch_string [expr [lsearch -exact $gitbranch_string "*"] + 1]];
+	}
   }
+
   set git_clean_hex [hexstr_flip [stringtohex $git_clean_string 4]];
-  puts "git_clean_hex $git_clean_hex"
+  puts "git_clean_string $git_clean_string";
+  puts "git_clean_hex $git_clean_hex";
+
+  set git_branch_hex [hexstr_flip [stringtohex $gitbranch_string 28]];
+  puts "gitbranch_string: $gitbranch_string";
+  puts "git_branch_hex $git_branch_hex";
 
   set vadj_check_string "vadj";
   set vadj_check_hex [hexstr_flip [stringtohex $vadj_check_string 4]];
-  puts "vadj_check_hex $vadj_check_hex"
+  puts "vadj_check_string $vadj_check_string";
+  puts "vadj_check_hex $vadj_check_hex";
 
   set thetime [clock seconds];
   set timedate_hex [hexstr_flip [stringtohex $thetime 12]];
-  puts "timedate_hex $timedate_hex"
+  puts "thetime $thetime";
+  puts "timedate_hex $timedate_hex";
 
   set verh_hex {};
   set verh_size 448;
 
-  append verh_hex $gitsha_hex $git_clean_hex $vadj_check_hex $timedate_hex;
+  append verh_hex $gitsha_hex $git_clean_hex $vadj_check_hex $timedate_hex $git_branch_hex;
   append verh_hex "00000000" [checksum8bit $verh_hex] "000000";
+
   set verh_hex [format %0-[expr [expr $verh_size] * 8]s $verh_hex];
-
   set table_size 16;
-
   set comh_size [expr 8 * $table_size];
-
   set comh_ver_hex "00000001";
 
-  set boardname [lindex [split $project_name _] [expr [llength [split $project_name _]] - 1]]
+  set boardname_string [lindex [split $project_name _] [expr [llength [split $project_name _]] - 1]];
+  set boardname_hex [hexstr_flip [stringtohex $boardname_string 32]];
 
-  set boardname_hex [hexstr_flip [stringtohex $boardname 32]]
+  puts "boardname_string $boardname_string";
+  puts "boardname_hex $boardname_hex";
 
-  set projname_hex [hexstr_flip [stringtohex [string trimright [string trimright $project_name $boardname] _] 32]]
+  set projname_string [string trimright [string trimright $project_name $boardname_string] _]
+  set projname_hex [hexstr_flip [stringtohex $projname_string 32]];
+
+  puts "projname_string $projname_string";
+  puts "projname_hex $projname_hex";
 
   set custom_hex [hexstr_flip [stringtohex $custom_string 64]];
-  puts "custom_hex $custom_hex"
+  puts "custom_hex $custom_hex";
+
+  puts "custom_string $custom_string";
+  puts "custom_hex $custom_hex";
 
   set pr_offset "00000000";
 
