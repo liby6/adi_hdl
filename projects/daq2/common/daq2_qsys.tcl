@@ -207,22 +207,22 @@ for {set i 0} {$i < $TX_NUM_OF_LANES} {incr i} {
 
 ad_cpu_interconnect 0x00020000 ad9144_jesd204.link_reconfig
 ad_cpu_interconnect 0x00024000 ad9144_jesd204.link_management
-ad_cpu_interconnect 0x00025000 ad9144_jesd204.link_pll_reconfig
-ad_cpu_interconnect 0x00026000 ad9144_jesd204.lane_pll_reconfig
-ad_cpu_interconnect 0x00028000 avl_adxcfg_0.rcfg_s0
-ad_cpu_interconnect 0x00029000 avl_adxcfg_1.rcfg_s0
-ad_cpu_interconnect 0x0002a000 avl_adxcfg_2.rcfg_s0
-ad_cpu_interconnect 0x0002b000 avl_adxcfg_3.rcfg_s0
+ad_cpu_interconnect 0x00025000 ad9144_jesd204.link_pll_reconfig "avl_mm_bridge_0" 
+ad_cpu_interconnect 0x00026000 ad9144_jesd204.lane_pll_reconfig "avl_mm_bridge_0"
+ad_cpu_interconnect 0x00028000 avl_adxcfg_0.rcfg_s0             "avl_mm_bridge_0"
+ad_cpu_interconnect 0x00029000 avl_adxcfg_1.rcfg_s0             "avl_mm_bridge_0"
+ad_cpu_interconnect 0x0002a000 avl_adxcfg_2.rcfg_s0             "avl_mm_bridge_0"
+ad_cpu_interconnect 0x0002b000 avl_adxcfg_3.rcfg_s0             "avl_mm_bridge_0" 0x10040000 
 ad_cpu_interconnect 0x0002c000 axi_ad9144_dma.s_axi
 ad_cpu_interconnect 0x00034000 axi_ad9144.s_axi
 
 ad_cpu_interconnect 0x00040000 ad9680_jesd204.link_reconfig
 ad_cpu_interconnect 0x00044000 ad9680_jesd204.link_management
-ad_cpu_interconnect 0x00045000 ad9680_jesd204.link_pll_reconfig
-ad_cpu_interconnect 0x00048000 avl_adxcfg_0.rcfg_s1
-ad_cpu_interconnect 0x00049000 avl_adxcfg_1.rcfg_s1
-ad_cpu_interconnect 0x0004a000 avl_adxcfg_2.rcfg_s1
-ad_cpu_interconnect 0x0004b000 avl_adxcfg_3.rcfg_s1
+ad_cpu_interconnect 0x00045000 ad9680_jesd204.link_pll_reconfig "avl_mm_bridge_1" 
+ad_cpu_interconnect 0x00048000 avl_adxcfg_0.rcfg_s1             "avl_mm_bridge_1"
+ad_cpu_interconnect 0x00049000 avl_adxcfg_1.rcfg_s1             "avl_mm_bridge_1"
+ad_cpu_interconnect 0x0004a000 avl_adxcfg_2.rcfg_s1             "avl_mm_bridge_1"
+ad_cpu_interconnect 0x0004b000 avl_adxcfg_3.rcfg_s1             "avl_mm_bridge_1" 0x10080000
 ad_cpu_interconnect 0x0004c000 axi_ad9680_dma.s_axi
 ad_cpu_interconnect 0x00050000 axi_ad9680.s_axi
 
